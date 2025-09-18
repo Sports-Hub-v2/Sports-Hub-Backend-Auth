@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,15 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public TokenResponse login(@Validated @RequestBody LoginRequest req, HttpServletRequest http) {
+    public ResponseEntity<TokenResponse> login(@Validated @RequestBody LoginRequest req, HttpServletRequest http) {
         String device = http.getHeader("User-Agent");
         var pair = authTokenService.login(req.getEmail(), req.getPassword(), device);
-        return TokenResponse.from(pair);
+        
+        return ResponseEntity.ok()
+            .header("Cache-Control", "no-cache, no-store, must-revalidate")
+            .header("Pragma", "no-cache")
+            .header("Expires", "0")
+            .body(TokenResponse.from(pair));
     }
 
     @PostMapping("/token/refresh")
