@@ -58,9 +58,15 @@ public class AuthTokenService {
     }
 
     @Transactional
-    public TokenPair login(String email, String rawPassword, String deviceInfo) {
-        Account acc = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials"));
+    public TokenPair login(String loginId, String rawPassword, String deviceInfo) {
+        Account acc;
+        if (loginId != null && loginId.contains("@")) {
+            acc = accountRepository.findByEmail(loginId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials"));
+        } else {
+            acc = accountRepository.findByUserid(loginId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials"));
+        }
         if (!encoder.matches(rawPassword, acc.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials");
         }
@@ -112,6 +118,7 @@ public class AuthTokenService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("accountId", acc.getId());
         claims.put("email", acc.getEmail());
+        claims.put("userid", acc.getUserid());
         claims.put("role", acc.getRole());
         String access = jwtTokenProvider.createToken(String.valueOf(acc.getId()), claims);
 
@@ -140,4 +147,3 @@ public class AuthTokenService {
         public String tokenType;
     }
 }
-

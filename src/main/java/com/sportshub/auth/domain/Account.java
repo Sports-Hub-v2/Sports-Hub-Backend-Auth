@@ -20,6 +20,9 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "userid", unique = true)
+    private String userid;
+
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -41,4 +44,3 @@ public class Account {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 }
-

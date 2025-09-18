@@ -20,12 +20,16 @@ public class AccountDtos {
 
         @NotBlank
         private String role;
+
+        // 선택: 아이디 로그인 지원 (null 허용)
+        private String userid;
     }
 
     @Data
     public static class Response {
         private Long id;
         private String email;
+        private String userid;
         private String role;
         private String status;
         private Boolean emailVerified;
@@ -33,4 +37,3 @@ public class AccountDtos {
         private LocalDateTime updatedAt;
     }
 }
-

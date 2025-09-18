@@ -21,7 +21,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TokenResponse> login(@Validated @RequestBody LoginRequest req, HttpServletRequest http) {
         String device = http.getHeader("User-Agent");
-        var pair = authTokenService.login(req.getEmail(), req.getPassword(), device);
+        String id = (req.getLoginId() != null && !req.getLoginId().isBlank())
+                ? req.getLoginId()
+                : req.getEmail();
+        var pair = authTokenService.login(id, req.getPassword(), device);
         
         return ResponseEntity.ok()
             .header("Cache-Control", "no-cache, no-store, must-revalidate")
@@ -51,8 +54,8 @@ public class AuthController {
 
     @Data
     public static class LoginRequest {
-        @Email
-        @NotBlank
+        // email 또는 userid 둘 중 하나 허용 (프론트 호환)
+        private String loginId;
         private String email;
         @NotBlank
         private String password;
@@ -83,4 +86,3 @@ public class AuthController {
         }
     }
 }
-

@@ -19,7 +19,8 @@ public class AccountController {
     @PostMapping("/accounts")
     @ResponseStatus(HttpStatus.CREATED)
     public Response create(@Validated @RequestBody CreateRequest req) {
-        Account created = accountService.create(req.getEmail(), req.getPassword(), req.getRole());
+        Account created = accountService.create(
+                req.getEmail(), req.getPassword(), req.getRole(), req.getUserid());
         return toResponse(created);
     }
 
@@ -39,4 +40,3 @@ public class AccountController {
         return r;
     }
 }
-

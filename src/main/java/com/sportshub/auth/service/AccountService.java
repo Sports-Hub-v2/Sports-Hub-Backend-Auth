@@ -16,7 +16,7 @@ public class AccountService {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Transactional
-    public Account create(String email, String rawPassword, String role) {
+    public Account create(String email, String rawPassword, String role, String userid) {
         accountRepository.findByEmail(email).ifPresent(a -> {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "email already exists");
         });
@@ -26,6 +26,10 @@ public class AccountService {
         a.setRole(role);
         a.setStatus("ACTIVE");
         a.setEmailVerified(Boolean.FALSE);
+        if (userid != null && !userid.isBlank()) {
+            // userid 중복은 DB 유니크로 보장됨; 중복시 예외 발생
+            a.setUserid(userid);
+        }
         return accountRepository.save(a);
     }
 
@@ -41,4 +45,3 @@ public class AccountService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "account not found"));
     }
 }
-
