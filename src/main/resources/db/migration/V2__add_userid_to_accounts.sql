@@ -1,0 +1,2 @@
+ALTER TABLE accounts
+  ADD COLUMN userid VARCHAR(100) UNIQUE;
