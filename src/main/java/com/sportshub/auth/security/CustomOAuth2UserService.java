@@ -41,4 +41,3 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(oAuth2User.getAuthorities(), attributes, nameAttributeKey);
     }
 }
-

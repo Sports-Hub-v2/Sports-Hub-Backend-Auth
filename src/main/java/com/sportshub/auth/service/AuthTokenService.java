@@ -136,6 +136,7 @@ public class AuthTokenService {
         tp.refreshToken = refreshStr;
         tp.refreshTokenExpiresIn = refreshTtlMs / 1000L;
         tp.tokenType = "Bearer";
+        tp.account = acc;  // Account 정보 포함
         return tp;
     }
 
@@ -145,5 +146,6 @@ public class AuthTokenService {
         public String refreshToken;
         public long refreshTokenExpiresIn;
         public String tokenType;
+        public Account account;  // 사용자 정보 추가
     }
 }

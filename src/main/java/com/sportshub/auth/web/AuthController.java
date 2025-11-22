@@ -64,6 +64,7 @@ public class AuthController {
         private String refreshToken;
         private long refreshTokenExpiresIn;
         private String tokenType;
+        private AccountInfo account;  // 사용자 정보 추가
 
         public static TokenResponse from(AuthTokenService.TokenPair p) {
             TokenResponse r = new TokenResponse();
@@ -72,8 +73,25 @@ public class AuthController {
             r.refreshToken = p.refreshToken;
             r.refreshTokenExpiresIn = p.refreshTokenExpiresIn;
             r.tokenType = p.tokenType;
+            if (p.account != null) {
+                r.account = new AccountInfo();
+                r.account.id = p.account.getId();
+                r.account.email = p.account.getEmail();
+                r.account.userid = p.account.getUserid();
+                r.account.role = p.account.getRole();
+                r.account.status = p.account.getStatus();
+            }
             return r;
         }
+    }
+
+    @Data
+    public static class AccountInfo {
+        private Long id;
+        private String email;
+        private String userid;
+        private String role;
+        private String status;
     }
 }
 

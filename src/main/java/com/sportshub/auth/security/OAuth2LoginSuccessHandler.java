@@ -70,4 +70,3 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         return v != null ? String.valueOf(v) : null;
     }
 }
-
