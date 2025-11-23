@@ -14,28 +14,23 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // 허용할 Origin들
+
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000",
             "http://localhost:5173",
-            "http://127.0.0.1:3000", 
-            "http://127.0.0.1:5173"
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+            "http://43.202.219.106:5173",
+            "http://43.202.219.106:3000"
         ));
-        
-        // 허용할 HTTP 메서드들
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        
-        // 허용할 헤더들
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        
-        // 인증 정보 포함 허용
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
 }
-
