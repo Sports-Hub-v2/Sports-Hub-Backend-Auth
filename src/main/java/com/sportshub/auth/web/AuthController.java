@@ -1,6 +1,8 @@
 package com.sportshub.auth.web;
 
 import com.sportshub.auth.service.AuthTokenService;
+import com.sportshub.auth.service.AccountService;
+import com.sportshub.auth.domain.Account;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthTokenService authTokenService;
+    private final AccountService accountService;
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
@@ -41,6 +44,22 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logoutAll(@Validated @RequestBody RefreshRequest req) {
         authTokenService.logoutAllByRefresh(req.getRefreshToken());
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public RegisterResponse register(@Validated @RequestBody RegisterRequest req, HttpServletRequest http) {
+        // 계정 생성
+        Account account = accountService.create(req.getEmail(), req.getPassword(), "USER", req.getUserid());
+
+        // 자동 로그인을 위해 토큰 발급
+        String device = http.getHeader("User-Agent");
+        var pair = authTokenService.login(account.getEmail(), req.getPassword(), device);
+
+        RegisterResponse response = new RegisterResponse();
+        response.setAccount(TokenResponse.from(pair).getAccount());
+        response.setTokens(TokenResponse.from(pair));
+        return response;
     }
 
     @Data
@@ -92,6 +111,22 @@ public class AuthController {
         private String userid;
         private String role;
         private String status;
+    }
+
+    @Data
+    public static class RegisterRequest {
+        @NotBlank
+        @Email
+        private String email;
+        @NotBlank
+        private String password;
+        private String userid;  // 선택 사항
+    }
+
+    @Data
+    public static class RegisterResponse {
+        private AccountInfo account;
+        private TokenResponse tokens;
     }
 }
 
